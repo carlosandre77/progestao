@@ -46,7 +46,7 @@ const FilterControls = ({
   const layerOptions = [
     { key: "lotes", label: "Lotes", hasData: lotes?.length > 0 },
     { key: "quadras", label: "Quadras", hasData: quadras?.length > 0 },
-    { key: "nucleos", label: "Núcleos", hasData: nucleos?.length > 0 },
+    // { key: "nucleos", label: "Núcleos", hasData: nucleos?.length > 0 },
     { key: "municipios", label: "Municípios", hasData: municipios?.length > 0 },
     { key: "territorios", label: "Territórios", hasData: territorios?.length > 0 },
   ];
@@ -83,9 +83,9 @@ const FilterControls = ({
       borderRadius: 8,
       boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
     }}>
-      <div className="central-label">
+      {/* <div className="central-label">
         NÚCLEO DE INFORMAÇÕES GE🌍ESPACIAIS - SPI
-      </div>
+      </div> */}
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2px", margin:  "0px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
@@ -93,7 +93,7 @@ const FilterControls = ({
           {username && <p>Bem-vindo, <strong>{username}</strong>!</p>}
           </div>
 
-          <button
+          {/* <button
             style={{
               background: "#fff",
               padding: 3,
@@ -104,7 +104,7 @@ const FilterControls = ({
             onClick={handleLogout}
           >
             Sair
-          </button>
+          </button> */}
             {/* <button
               onClick={onDownloadNucleoCompleto}
               style={{

@@ -1,6 +1,5 @@
 // App.js
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import "leaflet/dist/leaflet.css";
 import { useLogin } from "./hooks/useLogin";
 import { useNucleoFilters } from "./hooks/useNucleoFilters";
@@ -18,12 +17,8 @@ import LoginForm from "./components/LoginForm";
 
 import ViewSwitcher from './components/ViewSwitcher';
 import PainelPrincipal from './components/PainelPrincipal';
-import PainelAtividadesNgeo from './components/PainelAtividadesNgeo';
-import PainelNgeoInfo from './components/PainelNgeoInfo';
-import PainelCerurb from './components/PainelCerurb';
-import ChartsPainelPrincipal from './components/ChartsPainelPrincipal';
 
-
+import ChartsProGestaoReduzido from './components/ChartsProGestaoReduzido';
 
 import {
   Chart as ChartJS,
@@ -45,7 +40,7 @@ function App() {
   const [selectedTerritorio, setSelectedTerritorio] = useState("Todos");
   const [selectedMunicipio, setSelectedMunicipio] = useState("Todos");
   const [selectedNucleo, setSelectedNucleo] = useState("Todos");
-  const [showCharts, setShowCharts] = useState(true);
+  const [showCharts] = useState(true);
   const [activeView, setActiveView] = useState('painel1');
   const [selectedUnidade, setSelectedUnidade] = useState("Todos");
   
@@ -80,7 +75,7 @@ useEffect(() => {
     normalizeString(selectedMunicipio),
     normalizeString(selectedNucleo)
   );
-  const { atividadesData, loading: loadingPainel2, error } = useAtividadesGeo(selectedTerritorio, selectedMunicipio);
+  const { atividadesData  } = useAtividadesGeo(selectedTerritorio, selectedMunicipio);
 
 
   const [layersVisibility, setLayersVisibility] = useState({
@@ -108,11 +103,7 @@ lotes,
     dadoscontroleFiltrados,
     progestaoData, // <-- DADOS FILTRADOS PARA O PAINEL 5 OU AFINS
     loading: loadingPainel1,
-    resumoPlanilha,
-    planilhaData,
-    estatisticasPlanilha,
-    territorioStatsFiltrado,
-    estatisticasPorMesFiltrado,
+
     
 
   } = useNucleoFilters(selectedTerritorio, selectedMunicipio, selectedNucleo,selectedUnidade, nucleosExternos,activeView);
@@ -121,10 +112,7 @@ lotes,
   
   const isAppLoading = loadingPainel1 || isLoadingNucleosExternos;
 
-  const totalVetorizados = nucleosExternosFiltrados.reduce(
-      (acc, n) => acc + (parseInt(n.totalVetorizados) || 0),
-      0
-  );
+
   
   const [mapKey, setMapKey] = useState(0);
   const boundsKey = `${activeView}-${selectedTerritorio}-${selectedMunicipio}-${selectedNucleo}-${selectedUnidade}`;
@@ -134,53 +122,54 @@ lotes,
     // Para movimentos de câmera, usamos a prop boundsKey internamente no componente
     setMapKey(prevKey => prevKey + 1);
   }, [showCharts]);
-  const handleSaveControleRow = async (updatedRow) => {
-    try {
-        const API_URL = process.env.REACT_APP_API_URL;
-        const API_KEY = process.env.REACT_APP_API_KEY;
 
-        // Envia para o Backend
-        await axios.put(`${API_URL}/api/planilha-controle/${updatedRow.id}`, updatedRow, {
-            headers: { Authorization: `Bearer ${API_KEY}` }
-        });
+  // const handleSaveControleRow = async (updatedRow) => {
+  //   try {
+  //       const API_URL = process.env.REACT_APP_API_URL;
+  //       const API_KEY = process.env.REACT_APP_API_KEY;
 
-        alert("Linha atualizada com sucesso!");
+  //       // Envia para o Backend
+  //       await axios.put(`${API_URL}/api/planilha-controle/${updatedRow.id}`, updatedRow, {
+  //           headers: { Authorization: `Bearer ${API_KEY}` }
+  //       });
+
+  //       alert("Linha atualizada com sucesso!");
         
-        // Opcional: Recarregar a página para ver os dados atualizados
-        // window.location.reload(); 
+  //       // Opcional: Recarregar a página para ver os dados atualizados
+  //       // window.location.reload(); 
         
-    } catch (error) {
-        console.error("Erro ao salvar:", error);
-        alert("Erro ao salvar alterações no servidor.");
-    }
-  };
+  //   } catch (error) {
+  //       console.error("Erro ao salvar:", error);
+  //       alert("Erro ao salvar alterações no servidor.");
+  //   }
+  // };
 
-  const handleSavePlanilhaRow = async (updatedRow) => {
-    try {
-        const API_URL = process.env.REACT_APP_API_URL;
-        const API_KEY = process.env.REACT_APP_API_KEY;
+  // const handleSavePlanilhaRow = async (updatedRow) => {
+  //   try {
+  //       const API_URL = process.env.REACT_APP_API_URL;
+  //       const API_KEY = process.env.REACT_APP_API_KEY;
 
-        if (!updatedRow.id) {
-             alert("Erro: ID da linha não encontrado. (Planilha casalegal)");
-             return;
-        }
+  //       if (!updatedRow.id) {
+  //            alert("Erro: ID da linha não encontrado. (Planilha casalegal)");
+  //            return;
+  //       }
 
-        // Envia para o novo endpoint que criamos (/api/planilha-cerurb/:id)
-        await axios.put(`${API_URL}/api/planilha-casalegal/${updatedRow.id}`, updatedRow, {
-            headers: { Authorization: `Bearer ${API_KEY}` }
-        });
+  //       // Envia para o novo endpoint que criamos (/api/planilha-cerurb/:id)
+  //       await axios.put(`${API_URL}/api/planilha-casalegal/${updatedRow.id}`, updatedRow, {
+  //           headers: { Authorization: `Bearer ${API_KEY}` }
+  //       });
 
-        alert("Sucesso! Linha atualizada na Planilha CERURB.");
+  //       alert("Sucesso! Linha atualizada na Planilha CERURB.");
         
-    } catch (error) {
-        console.error("Erro ao salvar Planilha CERURB:", error);
-        if (error.response) {
-             alert(`Erro do Servidor: ${error.response.data.message || "Falha desconhecida"}`);
-        } else {
-             alert("Erro de conexão ao salvar.");
-        }
-    }
-  };
+  //   } catch (error) {
+  //       console.error("Erro ao salvar Planilha CERURB:", error);
+  //       if (error.response) {
+  //            alert(`Erro do Servidor: ${error.response.data.message || "Falha desconhecida"}`);
+  //       } else {
+  //            alert("Erro de conexão ao salvar.");
+  //       }
+  //   }
+  // };
 
   if (!isLoggedIn) return <LoginForm onLogin={login} />;
 
@@ -245,7 +234,7 @@ lotes,
               boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
             }}>
               {isAppLoading  ? (
-                <p style={{ fontSize: 14, color: "#888", height: "400px" }}>Carregando dados...</p>
+                <p style={{ fontSize: 14, color: "#888", height: "200px" }}>Carregando dados...</p>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 
@@ -272,14 +261,14 @@ lotes,
         </div>
           
         <div style={{
-          width: showCharts ? 700 : 20,
+          width: showCharts ? 520 : 20,
           height: "100vh",
           transition: "width 0.3s ease",
           display: "flex",
           flexDirection: "row",
         }}>
           <div style={{  display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <button
+          {/* <button
               onClick={() => {
                 setShowCharts((prev) => !prev);
                 setTimeout(() => {
@@ -302,7 +291,7 @@ lotes,
           >
 
             {showCharts ? "<" : ">"}
-          </button>
+          </button> */}
           </div>
 
           
@@ -314,26 +303,17 @@ lotes,
                 gridTemplateColumns: "repeat(auto-fill, minmax(550px, 5fr))",
                 alignContent: "center",
               }}>
-                <label style={{ fontWeight: "bold", fontSize: "14px", margin: "5px 0" }}>
+                {/* <label style={{ fontWeight: "bold", fontSize: "14px", margin: "5px 0" }}>
                   Gráficos
-                </label>
+                </label> */}
                 
                 {/* 4. RENDERIZAÇÃO CONDICIONAL PARA OS GRÁFICOS */}
                 {activeView === 'painel1' && (
                   <div style={{ width: "100%" }}>
-                    <ChartsPainelPrincipal
-                      statusCounts={statusCounts}
-                      nucleosExternos={nucleosExternosFiltrados}
-                      municipios={municipiosMap}
-                      selectedMunicipio={selectedMunicipio}
-                      loading={loadingPainel1}
-                      resumoPlanilha={resumoPlanilha}
-                      estatisticasPlanilha
-                      territorioStatsFiltrado={territorioStatsFiltrado}
-                      estatisticasPorMesFiltrado={estatisticasPorMesFiltrado}
-                      planilhaData={planilhaData}
-                      
-                    />
+                        <ChartsProGestaoReduzido 
+                                data={progestaoData} 
+                                loading={isAppLoading} 
+                            />
                   </div>
                 )}
 

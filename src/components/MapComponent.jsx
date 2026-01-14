@@ -124,7 +124,7 @@ const MapComponent = forwardRef(({ lotes = [], quadras = [], nucleos = [], munic
 
   const progestaoIcon = L.icon({
     iconUrl: "/marker-progestao.png", // Certifique-se de ter um ícone com este nome em /public
-    iconSize: [25, 25],
+    iconSize: [10, 10],
     iconAnchor: [10, 10],
     popupAnchor: [1, -30],
   });

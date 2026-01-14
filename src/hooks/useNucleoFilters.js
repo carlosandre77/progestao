@@ -258,7 +258,7 @@ export function useNucleoFilters(selectedTerritorio, selectedMunicipio, selected
 
         const tNorm = normalizeString(selectedTerritorio);
         const mNorm = normalizeString(selectedMunicipio);
-        const uNorm = normalizeString(selectedUnidade);
+
 
         // 1. PRIORIDADE MÁXIMA: Unidade Administrativa (Pontos do Pró-Gestão)
         if (selectedUnidade !== "Todos" && progestaoFiltrados.length > 0) {
