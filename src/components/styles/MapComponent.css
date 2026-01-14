@@ -1,0 +1,126 @@
+.lote-label {
+  font-size: 10px;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: black;
+  border: 1px solid #ccc;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+}
+
+
+.quadra-label {
+  font-size: 10px;
+  font-weight: bold;
+  background-color: rgba(194, 193, 192, 0.733);
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: black;
+  border: none;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  top: -20px;
+  z-index: 2;
+}
+
+.nucleo-label {
+  font-size: 10px;
+  font-weight: bold;
+  background-color: rgba(255, 128, 69, 0.7);
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: black;
+  border: none;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  top: 10%;
+  z-index: 3;
+}
+
+.territorio-label {
+  font-size: 10px;
+  font-weight: bold;
+  background-color: rgba(255, 128, 69, 0);
+  box-shadow: none;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: rgb(153, 152, 152);
+  border: none;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  top: 10%;
+  z-index: 3;
+}
+/* Container do seletor de mapa base */
+.base-map-selector {
+  position: absolute;
+  bottom: 45px;
+  right: 25px;
+  z-index: 1000;
+  width: 100px;
+  font-size: 12px;
+  background: white;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilo da div central com o nome */
+.central-label {
+  position: flex;
+  align-items: center;
+  transform: translateX(5%);
+  z-index: 1000;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Painel de informações */
+.feature-info-panel {
+  position: absolute;
+  bottom: 20px;
+  right: 10px;
+  z-index: 1000;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  max-width: 300px;
+  max-height: 400px;
+  overflow: auto;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+.feature-info-panel button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.feature-info-panel h3 {
+  margin-top: 0;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.feature-info-panel div > div {
+  margin-bottom: 8px;
+}
+
+/* Container do mapa (ajuste se necessário) */
+.map-container {
+  height: 100%;
+  width: 100%;
+}

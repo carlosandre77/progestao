@@ -1,0 +1,116 @@
+/* components/styles/Legend.css */
+
+/* Este container continua o mesmo */
+.legend-column-left {
+  position: absolute;
+  top: 30px;
+  left: 10px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+}
+
+/* LEGENDA INDIVIDUAL */
+.legend-container {
+  background-color: white;
+
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  font-family: Arial, sans-serif;
+  font-size: 8px;
+  overflow-y: auto;
+  /* Adicione uma largura para a caixa não ficar estranha ao minimizar */
+  width: 170px;
+}
+
+/* --- NOVOS ESTILOS PARA O HEADER --- */
+.legend-header {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 10px; /* ADICIONADO PADDING AQUI */
+  cursor: pointer; /* ADICIONADO CURSOR */
+}
+.legend-header:hover {
+  background-color: #f7f7f7;
+}
+/* --- ESTILO DO TÍTULO ATUALIZADO --- */
+.legend-container h4 {
+  margin: 0; /* Remove margens */
+  border-bottom: none; /* Remove a borda antiga */
+  padding-bottom: 0; /* Remove padding antigo */
+  font-size: 10px; /* Um pouco maior para ser o título */
+  flex-grow: 1; /* Ocupa o espaço disponível */
+}
+
+/* --- NOVO ESTILO PARA O BOTÃO INDIVIDUAL --- */
+.legend-minimize-indicator {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  line-height: 18px; 
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  /* cursor: pointer; FOI REMOVIDO (agora está no header) */
+  padding: 0;
+  margin-left: 10px; 
+  flex-shrink: 0; 
+}
+
+.legend-minimize-btn:hover {
+  background: #e0e0e0;
+}
+
+/* --- ESTILO DA LISTA (UL) ATUALIZADO --- */
+.legend-container ul {
+  list-style: none;
+  padding: 0 10px 10px 10px; /* Padding para o conteúdo */
+  margin: 0;
+  margin-top: 0; /* Ajustado */
+  padding-top: 8px; /* Ajustado */
+  border-top: 1px solid #ddd;
+}
+
+/* --- ESTES CONTINUAM IGUAIS --- */
+.legend-container li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color-box {
+  width: 20px;
+  height: 10px;
+  opacity: 0.7;
+  margin-right: 8px;
+  border: 1px solid #cccccc50;
+  border-radius: 4px;
+}
+
+/* --- REMOVA O BOTÃO ANTIGO --- */
+/* Apague este seletor .legend-toggle-btn do seu CSS */
+/* .legend-toggle-btn {
+  ...
+} 
+*/
+
+.legend-toggle-btn {
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  width: 100px; /* Faz o botão ocupar a largura da legenda */
+}
+
+.legend-toggle-btn:hover {
+  background-color: #f4f4f4;
+}
