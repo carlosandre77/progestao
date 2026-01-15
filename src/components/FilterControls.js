@@ -44,8 +44,8 @@ const FilterControls = ({
   };
 
   const layerOptions = [
-    { key: "lotes", label: "Lotes", hasData: lotes?.length > 0 },
-    { key: "quadras", label: "Quadras", hasData: quadras?.length > 0 },
+    // { key: "lotes", label: "Lotes", hasData: lotes?.length > 0 },
+    // { key: "quadras", label: "Quadras", hasData: quadras?.length > 0 },
     // { key: "nucleos", label: "Núcleos", hasData: nucleos?.length > 0 },
     { key: "municipios", label: "Municípios", hasData: municipios?.length > 0 },
     { key: "territorios", label: "Territórios", hasData: territorios?.length > 0 },
@@ -81,7 +81,8 @@ const FilterControls = ({
       padding: 20,
       gap: 30,
       borderRadius: 8,
-      boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
+      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+      width: 400
     }}>
       {/* <div className="central-label">
         NÚCLEO DE INFORMAÇÕES GE🌍ESPACIAIS - SPI

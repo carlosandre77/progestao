@@ -3,15 +3,10 @@ import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { useLogin } from "./hooks/useLogin";
 import { useNucleoFilters } from "./hooks/useNucleoFilters";
-import { normalizeString } from "./utils/string";
-import { useAtividadesGeo } from './hooks/useAtividadesGeo';
-import useNucleosData from "./components/useNucleosData";
+
 
 import MapComponent from "./components/MapComponent";
 import FilterControls from "./components/FilterControls";
-import ChartsContainer from "./components/ChartsContainer";
-import ChartsContainerAtividades from './components/ChartsContainerAtividades';
-import ChartsNgeoInfo from './components/ChartsNgeoInfo';
 
 import LoginForm from "./components/LoginForm";
 
@@ -71,11 +66,7 @@ useEffect(() => {
     setSelectedUnidade("Todos"); // Adicionado reset ao trocar painel
   }, [activeView]);
 
-  const { nucleosExternos, loading: isLoadingNucleosExternos } = useNucleosData(
-    normalizeString(selectedMunicipio),
-    normalizeString(selectedNucleo)
-  );
-  const { atividadesData  } = useAtividadesGeo(selectedTerritorio, selectedMunicipio);
+
 
 
   const [layersVisibility, setLayersVisibility] = useState({
@@ -97,20 +88,20 @@ lotes,
     territoriosOptions,
     municipiosFiltrados,
     unidadesOptions, // <-- NOVA LISTA VINDA DO HOOK
-    statusCounts,
+
     filteredBounds,
-    nucleosExternosFiltrados,
-    dadoscontroleFiltrados,
+
+
     progestaoData, // <-- DADOS FILTRADOS PARA O PAINEL 5 OU AFINS
     loading: loadingPainel1,
 
     
 
-  } = useNucleoFilters(selectedTerritorio, selectedMunicipio, selectedNucleo,selectedUnidade, nucleosExternos,activeView);
+  } = useNucleoFilters(selectedTerritorio, selectedMunicipio, selectedNucleo,selectedUnidade,activeView);
 
 
   
-  const isAppLoading = loadingPainel1 || isLoadingNucleosExternos;
+  const isAppLoading = loadingPainel1  ;
 
 
   
@@ -208,7 +199,7 @@ lotes,
             setSelectedNucleo={setSelectedNucleo}
 
             nucleos={nucleos} // <-- Lista para Painel 1
-            nucleosExternos={nucleosExternos} 
+
             activeView={activeView}
 
 
@@ -227,7 +218,7 @@ lotes,
           
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
             <div style={{
-              width: "500px",
+              width: "450px",
               background: "#fff",
               padding: 4,
               marginTop: 12,
@@ -317,37 +308,6 @@ lotes,
                   </div>
                 )}
 
-                {activeView === 'painel2' && (
-                    <div style={{ width: "100%",margin: "5px" }}>
-                    <ChartsContainer
-                      statusCounts={statusCounts}
-                      nucleosExternos={nucleosExternosFiltrados}
-                      municipios={municipiosMap}
-                      selectedMunicipio={selectedMunicipio}
-                      loading={loadingPainel1}
-                    />
-                    </div>
-                )}
-                
-                {activeView === 'painel3' && (
-                    <div style={{ width: "100%",margin: "5px" }}>
-                    <ChartsContainerAtividades 
-                    data={atividadesData}
-                     /> 
-                    
-                    </div>
-                )}
-
-                {activeView === 'painel4' && (
-                    <div style={{ width: "100%" }}>
-                      {/* Substitui o ChartsContainer antigo pelo novo ChartsCerurb */}
-                      <ChartsNgeoInfo
-                        data={dadoscontroleFiltrados}
-
-                      />
-                    </div>
-                )}
-
               </div>
             </>
           )}
@@ -369,7 +329,6 @@ lotes,
           territorios={territorios}
           municipios={municipiosMap}
           bounds={filteredBounds}
-          nucleosExternos={nucleosExternosFiltrados}
           layers={layersVisibility}
           progestaoData={progestaoData}
         />

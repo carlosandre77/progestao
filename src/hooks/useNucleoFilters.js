@@ -88,14 +88,29 @@ export function useNucleoFilters(selectedTerritorio, selectedMunicipio, selected
     }, [features]);
 
     const municipiosFiltrados = useMemo(() => {
-        const tNorm = normalizeString(selectedTerritorio);
-        const filteredFeatures = (selectedTerritorio === "Todos")
-            ? features
-            : features.filter(f => f.properties.territorio_normalizado === tNorm);
+        // 1. Pega os dados do Pró-Gestão (onde estão as unidades administrativas)
+        const dataArr = Array.isArray(progestaoData) ? progestaoData : [];
         
-        const unique = new Set(filteredFeatures.map(f => f.properties.MUNICIPIO).filter(Boolean));
-        return ["Todos", ...Array.from(unique).sort()];
-    }, [features, selectedTerritorio]);
+        const tNorm = normalizeString(selectedTerritorio);
+        const isTAll = selectedTerritorio === "Todos";
+
+        // 2. Filtra os dados pelo Território selecionado
+        const filtradosPorTerritorio = dataArr.filter(item => {
+            const itemT = normalizeString(item.territorio || "");
+            return isTAll || itemT === tNorm;
+        });
+
+        // 3. Extrai apenas os nomes dos municípios que aparecem nesses dados
+        const uniqueMunicipios = new Set(
+            filtradosPorTerritorio
+                .map(item => item.municipio || item.localizacao)
+                .filter(Boolean)
+        );
+
+        // 4. Retorna a lista ordenada com o "Todos"
+        return ["Todos", ...Array.from(uniqueMunicipios).sort()];
+    }, [progestaoData, selectedTerritorio]);
+
 
     // Opções de Unidade Administrativa baseada no Município/Território
     const unidadesOptions = useMemo(() => {

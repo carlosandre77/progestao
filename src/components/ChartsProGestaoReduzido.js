@@ -1,16 +1,31 @@
 import React, { useMemo } from "react";
 import { Bar } from "react-chartjs-2";
 
-
-// Helpers de conversão e abreviação
+// Helpers de conversão
 const parseArea = (val) => {
     if (!val) return 0;
     return parseFloat(String(val).replace(/\./g, '').replace(',', '.')) || 0;
 };
 
+// --- FUNÇÃO DE MÁSCARA CONDICIONAL ---
+const formatValueWithMask = (val, isFullData) => {
+    if (val === 0) return "0,00";
+    
+    // Se não houver filtro (dados completos), exibe em "mil"
+    if (isFullData) {
+        return (val / 1000).toLocaleString('pt-BR', { 
+            minimumFractionDigits: 2, 
+            maximumFractionDigits: 2 
+        }) + " mil";
+    }
+    
+    // Se houver filtro, exibe o valor real formatado
+    return val.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) + " m²";
+};
+
 const abreviarNome = (nome) => {
-    if (!nome) return "";
-    return nome
+    if (!nome || nome === "S/N") return "NÃO IDENTIFICADO";
+    let nomeTratado = nome
         .replace(/UNIDADE ESCOLAR /gi, "U.E. ")
         .replace(/GRUPAMENTO DE POLÍCIA MILITAR/gi, "GPM")
         .replace(/DELEGACIA DE POLÍCIA CIVIL/gi, "DPC")
@@ -18,11 +33,19 @@ const abreviarNome = (nome) => {
         .replace(/CENTRO ADMINISTRATIVO/gi, "C. ADM")
         .replace(/\s+/g, " ")
         .trim();
+
+    const limiteCaracteres = 25; 
+    if (nomeTratado.length > limiteCaracteres) {
+        return nomeTratado.substring(0, limiteCaracteres) + "...";
+    }
+    return nomeTratado;
 };
 
 const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
     
-    // 1. Cálculos dos Indicadores (Cards)
+    // Define se os dados estão sem filtro (Aprox. 961 é o seu total)
+    const isFullData = data.length > 900;
+
     const metrics = useMemo(() => {
         const totalUnidades = data.length;
         const totalMatriculas = data.filter(item => 
@@ -37,11 +60,16 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
         return { totalUnidades, totalMatriculas, areaConstruida, areaTerreno };
     }, [data]);
 
-    // 2. Rankings para os Gráficos
+    // Lógica dos Gráficos (Ranking Top 10)
     const barAreaConstruidaData = useMemo(() => {
         const topData = [...data]
-            .map(item => ({ nome: abreviarNome(item.unidade || "S/N"), valor: parseArea(item.area_construida) }))
+            .filter(item => parseArea(item.area_construida) > 0 && (item.unidade || item.tipo_unidade))
+            .map(item => ({ 
+                nome: abreviarNome(item.unidade || item.tipo_unidade), 
+                valor: parseArea(item.area_construida) 
+            }))
             .sort((a, b) => b.valor - a.valor).slice(0, 10);
+
         return {
             labels: topData.map(d => d.nome),
             datasets: [{ label: 'm²', data: topData.map(d => d.valor), backgroundColor: '#4BC0C090' }]
@@ -50,8 +78,13 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
 
     const barAreaTerrenoData = useMemo(() => {
         const topData = [...data]
-            .map(item => ({ nome: abreviarNome(item.unidade || "S/N"), valor: parseArea(item.area_total) }))
+            .filter(item => parseArea(item.area_total) > 0 && (item.unidade || item.tipo_unidade))
+            .map(item => ({ 
+                nome: abreviarNome(item.unidade || item.tipo_unidade), 
+                valor: parseArea(item.area_total) 
+            }))
             .sort((a, b) => b.valor - a.valor).slice(0, 10);
+
         return {
             labels: topData.map(d => d.nome),
             datasets: [{ label: 'm²', data: topData.map(d => d.valor), backgroundColor: '#FFCE5690' }]
@@ -60,22 +93,11 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
 
     if (loading) return <div style={{ padding: 20, textAlign: "center" }}>Carregando dados...</div>;
 
-    const options = (title) => ({
-        indexAxis: 'y',
-        maintainAspectRatio: false,
-        plugins: {
-            title: { display: true, text: title, font: { size: 11 } },
-            legend: { display: false },
-            datalabels: { color: '#444', anchor: 'end', align: 'right', font: { size: 8 } }
-        },
-        scales: { x: { beginAtZero: true }, y: { ticks: { font: { size: 8 } }, grid: { display: false } } }
-    });
-
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
             
-            {/* LINHA DE CARDS DE INDICADORES */}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", width: 100 }}>
+            {/* LINHA DE CARDS COM VALORES MASCARADOS OU REAIS */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", width: "490px" }}>
                 <div className="metric-card" style={cardStyle("#e3f2fd")}>
                     <span style={labelStyle}>Total Unidades</span>
                     <div style={valueStyle}>{metrics.totalUnidades}</div>
@@ -86,34 +108,52 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
                 </div>
                 <div className="metric-card" style={cardStyle("#e8f5e9")}>
                     <span style={labelStyle}>Soma Área Const.</span>
-                    <div style={valueStyle}>{metrics.areaConstruida.toLocaleString('pt-BR')} m²</div>
+                    <div style={valueStyle}>
+                        {formatValueWithMask(metrics.areaConstruida, isFullData)}
+                    </div>
                 </div>
                 <div className="metric-card" style={cardStyle("#f3e5f5")}>
                     <span style={labelStyle}>Soma Área Terreno</span>
-                    <div style={valueStyle}>{metrics.areaTerreno.toLocaleString('pt-BR')} m²</div>
+                    <div style={valueStyle}>
+                        {formatValueWithMask(metrics.areaTerreno, isFullData)}
+                    </div>
                 </div>
             </div>
 
-            {/* CONTAINER DOS GRÁFICOS */}
-            <div style={{ display: "flex", flexDirection: "column",width: 490, gap: 15, background: "#fff", padding: 15, borderRadius: 10, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", border: "1px solid #ddd" }}>
-                <div style={{ height: 260 }}><Bar data={barAreaConstruidaData} options={options("Top 10 Unidades (Área Construída)")} /></div>
-                <div style={{ height: 260 }}><Bar data={barAreaTerrenoData} options={options("Top 10 Unidades (Área Terreno)")} /></div>
+            <div style={{ display: "flex", flexDirection: "column", width: "490px", gap: 15, background: "#fff", padding: 15, borderRadius: 10, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", border: "1px solid #ddd" }}>
+                <div style={{ height: 260 }}>
+                    <Bar data={barAreaConstruidaData} options={options("Top 10 Unidades (Área Construída)")} />
+                </div>
+                <div style={{ height: 260 }}>
+                    <Bar data={barAreaTerrenoData} options={options("Top 10 Unidades (Área Terreno)")} />
+                </div>
             </div>
         </div>
     );
 };
 
-// Estilos internos rápidos para os cards
-const cardStyle = (bgColor) => ({
-    background: bgColor,
-    padding: "10px",
-    width: 100,
-    borderRadius: "8px",
-    textAlign: "center",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-    border: "1px solid #eee"
+// Funções de Estilo
+const options = (title) => ({
+    indexAxis: 'y',
+    maintainAspectRatio: false,
+    plugins: {
+        title: { display: true, text: title, font: { size: 11 } },
+        legend: { display: false },
+        datalabels: { 
+            color: '#444', anchor: 'end', align: 'right', font: { size: 8 },
+            formatter: (val) => val > 0 ? val.toLocaleString('pt-BR') : ''
+        }
+    },
+    scales: { x: { beginAtZero: true, ticks: { font: { size: 8 } } }, y: { ticks: { font: { size: 8 } }, grid: { display: false } } }
 });
-const labelStyle = { fontSize: "9px", color: "#666", textTransform: "uppercase", fontWeight: "bold", display: "block", marginBottom: "4px", };
-const valueStyle = { fontSize: "14px", fontWeight: "bold", color: "#333"};
+
+const cardStyle = (bgColor) => ({
+    background: bgColor, padding: "10px", borderRadius: "8px", textAlign: "center",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.05)", border: "1px solid #eee",
+    display: "flex", flexDirection: "column", justifyContent: "center", minHeight: "65px"
+});
+
+const labelStyle = { fontSize: "8px", color: "#666", textTransform: "uppercase", fontWeight: "bold", display: "block", marginBottom: "4px" };
+const valueStyle = { fontSize: "11px", fontWeight: "bold", color: "#333" };
 
 export default ChartsProGestaoReduzido;
