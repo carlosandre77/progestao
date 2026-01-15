@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
-import { Bar } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2"; // Importar Doughnut
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
 // Helpers de conversão
 const parseArea = (val) => {
@@ -40,10 +41,11 @@ const abreviarNome = (nome) => {
     }
     return nomeTratado;
 };
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+
 
 const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
-    
-    // Define se os dados estão sem filtro (Aprox. 961 é o seu total)
     const isFullData = data.length > 900;
 
     const metrics = useMemo(() => {
@@ -57,10 +59,37 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
         const areaConstruida = data.reduce((acc, item) => acc + parseArea(item.area_construida), 0);
         const areaTerreno = data.reduce((acc, item) => acc + parseArea(item.area_total), 0);
 
-        return { totalUnidades, totalMatriculas, areaConstruida, areaTerreno };
-    }, [data]);
+        // --- LÓGICA PARA O GRÁFICO DE ROSCA (TIPOS) ---
+            const contagemTipos = data.reduce((acc, item) => {
+                const t = item.tipo || "NÃO INFORMADO";
+                acc[t] = (acc[t] || 0) + 1;
+                return acc;
+            }, {});
 
-    // Lógica dos Gráficos (Ranking Top 10)
+            return { totalUnidades, totalMatriculas, areaConstruida, areaTerreno, contagemTipos };
+        }, [data]);
+
+        // Dados do Gráfico de Rosca
+    const doughnutData = useMemo(() => {
+        const labels = Object.keys(metrics.contagemTipos);
+        const values = Object.values(metrics.contagemTipos);
+
+        return {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: [
+                    '#4BC0C090', // Verde água
+                    '#FFCE5690', // Amarelo
+                    '#36A2EB90', // Azul
+                    '#FF638490', // Rosa
+                    '#9966FF90', // Roxo
+                ],
+                borderWidth: 1,
+            }]
+        };
+    }, [metrics.contagemTipos]);
+// Lógica dos Gráficos (Ranking Top 10)
     const barAreaConstruidaData = useMemo(() => {
         const topData = [...data]
             .filter(item => parseArea(item.area_construida) > 0 && (item.unidade || item.tipo_unidade))
@@ -121,6 +150,22 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", width: "490px", gap: 15, background: "#fff", padding: 15, borderRadius: 10, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", border: "1px solid #ddd" }}>
+                
+                <div style={{ height: 200, marginBottom: 10 }}>
+                    <Doughnut 
+                        data={doughnutData} 
+                        options={{
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: { display: true, text: "Distribuição por Tipo de Imóvel", font: { size: 11 } },
+                                legend: { 
+                                    position: 'right',
+                                    labels: { boxWidth: 10, font: { size: 9 } }
+                                }
+                            }
+                        }} 
+                    />
+                </div>
                 <div style={{ height: 260 }}>
                     <Bar data={barAreaConstruidaData} options={options("Top 10 Unidades (Área Construída)")} />
                 </div>

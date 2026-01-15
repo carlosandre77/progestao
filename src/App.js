@@ -176,7 +176,7 @@ lotes,
       <div style={{
         backgroundColor: "#f5f5f5",
         padding: "10px",
-        overflowY: "auto",
+        // overflowY: "auto",
         display: "flex",
         gap: "10px",
         borderRight: "1px solid #ddd"
