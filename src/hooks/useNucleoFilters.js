@@ -266,6 +266,17 @@ export function useNucleoFilters(selectedTerritorio, selectedMunicipio, selected
         }, {});
     }, [nucleosExternosFiltrados]);
 
+
+       const territorios = useMemo(() => {
+            const allTerritorios = features.filter(f => f.properties.TIPO?.toLowerCase() === "territorio");
+
+            if (selectedTerritorio === "Todos") {
+                return allTerritorios;
+            }
+
+            const territorioNorm = normalizeString(selectedTerritorio);
+            return allTerritorios.filter(f => f.properties.territorio_normalizado === territorioNorm);
+        }, [features, selectedTerritorio]); // Adiciona dependência de filtro
         // --- 4. Camadas e Bounds do Mapa ---
 
     const filteredBounds = useMemo(() => {
@@ -349,7 +360,7 @@ export function useNucleoFilters(selectedTerritorio, selectedMunicipio, selected
         quadras: selectedNucleo !== "Todos" ? filteredFeatures.filter(f => f.properties.TIPO?.toLowerCase() === "quadra") : [],
         nucleosFiltrados: filteredFeatures.filter(f => f.properties.TIPO?.toLowerCase() === "nucleo"),
         municipiosMap: features.filter(f => f.properties.TIPO?.toLowerCase() === "municipio"),
-        territorios: features.filter(f => f.properties.TIPO?.toLowerCase() === "territorio"),
+        territorios,
         statusCounts,
         filteredBounds,
         nucleosExternosFiltrados,
