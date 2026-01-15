@@ -70,7 +70,7 @@ const FitBoundsHandler = ({ bounds, boundsKey }) => {
 
       // Usamos flyToBounds para suavidade
       map.flyToBounds(bounds, { 
-        padding: [1gi0, 10], 
+        padding: [10, 10], 
         duration: 1.0,
         animate: true 
       });

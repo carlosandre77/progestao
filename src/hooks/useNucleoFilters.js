@@ -265,18 +265,35 @@ export function useNucleoFilters(selectedTerritorio, selectedMunicipio, selected
             return acc;
         }, {});
     }, [nucleosExternosFiltrados]);
+    const municipiosMap = useMemo(() => {
+        let municipios = features.filter(f => f.properties.TIPO?.toLowerCase() === "municipio");
+        const territorioNorm = normalizeString(selectedTerritorio);
+        const municipioNorm = normalizeString(selectedMunicipio);
+
+        // Filtra por território se um território for selecionado
+        if (selectedTerritorio !== "Todos") {
+            municipios = municipios.filter(f => f.properties.territorio_normalizado === territorioNorm);
+        }
+
+        // Filtra por município se um município específico for selecionado
+        if (selectedMunicipio !== "Todos") {
+            municipios = municipios.filter(f => f.properties.municipio_normalizado === municipioNorm);
+        }
+
+        return municipios;
+    }, [features, selectedTerritorio, selectedMunicipio]);
 
 
-       const territorios = useMemo(() => {
-            const allTerritorios = features.filter(f => f.properties.TIPO?.toLowerCase() === "territorio");
+    const territorios = useMemo(() => {
+        const allTerritorios = features.filter(f => f.properties.TIPO?.toLowerCase() === "territorio");
 
-            if (selectedTerritorio === "Todos") {
-                return allTerritorios;
-            }
+        if (selectedTerritorio === "Todos") {
+            return allTerritorios;
+        }
 
-            const territorioNorm = normalizeString(selectedTerritorio);
-            return allTerritorios.filter(f => f.properties.territorio_normalizado === territorioNorm);
-        }, [features, selectedTerritorio]); // Adiciona dependência de filtro
+        const territorioNorm = normalizeString(selectedTerritorio);
+        return allTerritorios.filter(f => f.properties.territorio_normalizado === territorioNorm);
+    }, [features, selectedTerritorio]); // Adiciona dependência de filtro
         // --- 4. Camadas e Bounds do Mapa ---
 
     const filteredBounds = useMemo(() => {
@@ -359,7 +376,7 @@ export function useNucleoFilters(selectedTerritorio, selectedMunicipio, selected
         lotes: selectedNucleo !== "Todos" ? filteredFeatures.filter(f => f.properties.TIPO?.toLowerCase() === "lote") : [],
         quadras: selectedNucleo !== "Todos" ? filteredFeatures.filter(f => f.properties.TIPO?.toLowerCase() === "quadra") : [],
         nucleosFiltrados: filteredFeatures.filter(f => f.properties.TIPO?.toLowerCase() === "nucleo"),
-        municipiosMap: features.filter(f => f.properties.TIPO?.toLowerCase() === "municipio"),
+        municipiosMap,
         territorios,
         statusCounts,
         filteredBounds,
