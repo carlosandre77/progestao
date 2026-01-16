@@ -11,7 +11,6 @@ const fetchAllData = async () => {
 
     const [geoJsonRes, planilhaRes, resumoRes, controleRes, progestaoRes] = await Promise.all([
         axios.get(`${API_URL}/api/dados_separados`, authHeaders),
-        axios.get(`${API_URL}/api/planilha-cerurb`, authHeaders),
         axios.get(`${API_URL}/api/planilha-resumo`, authHeaders),
         axios.get(`${API_URL}/api/planilha-controle`, authHeaders),
         axios.get(`${API_URL}/api/imoveis-progestao`, authHeaders)

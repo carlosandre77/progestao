@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Bar, Doughnut } from "react-chartjs-2"; // Importar Doughnut
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend,  Title } from 'chart.js';
+import PainelRetratil from "./RatratilPainel";
 
 // Helpers de conversão
 const parseArea = (val) => {
@@ -41,7 +42,7 @@ const abreviarNome = (nome) => {
     }
     return nomeTratado;
 };
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 
 
@@ -148,9 +149,9 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
                     </div>
                 </div>
             </div>
-
+             
             <div style={{ display: "flex", flexDirection: "column", width: "490px", gap: 15, background: "#fff", padding: 15, borderRadius: 10, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", border: "1px solid #ddd" }}>
-                
+                <PainelRetratil > 
                 <div style={{ height: 200, marginBottom: 10 }}>
                     <Doughnut 
                         data={doughnutData} 
@@ -166,12 +167,18 @@ const ChartsProGestaoReduzido = ({ data = [], loading = false }) => {
                         }} 
                     />
                 </div>
-                <div style={{ height: 260 }}>
+                </PainelRetratil>
+                <PainelRetratil > 
+                <div style={{ height: 250 }}>
                     <Bar data={barAreaConstruidaData} options={options("Top 10 Unidades (Área Construída)")} />
                 </div>
-                <div style={{ height: 260 }}>
+                </PainelRetratil>
+                <PainelRetratil > 
+                
+                <div style={{ height: 250 }}>
                     <Bar data={barAreaTerrenoData} options={options("Top 10 Unidades (Área Terreno)")} />
                 </div>
+                </PainelRetratil>
             </div>
         </div>
     );

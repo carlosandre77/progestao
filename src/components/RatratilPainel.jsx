@@ -7,7 +7,7 @@ const PainelRetratil = ({ titulo, children, defaultOpen = true }) => {
     <div
       style={{
         // border: "1px solid #ccc",
-        marginBottom: "12px",
+        marginBottom: "10px",
         backgroundColor: "#f9f9f9",
         margin:'0px',
         padding:'0px',
@@ -17,7 +17,7 @@ const PainelRetratil = ({ titulo, children, defaultOpen = true }) => {
       <div
         onClick={() => setAberto(!aberto)}
         style={{
-          padding: "10px",
+          padding: "8px",
           cursor: "pointer",
           display: "flex",
           justifyContent: "space-between",

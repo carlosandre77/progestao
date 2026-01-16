@@ -292,7 +292,7 @@ lotes,
               <div style={{  
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fill, minmax(550px, 5fr))",
-                alignContent: "center",
+                alignContent: "top",
               }}>
                 {/* <label style={{ fontWeight: "bold", fontSize: "14px", margin: "5px 0" }}>
                   Gráficos

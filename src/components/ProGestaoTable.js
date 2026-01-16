@@ -9,7 +9,7 @@ const ProGestaoTable = ({ data }) => {
     if (!data || data.length === 0) return <p>Nenhum imóvel encontrado.</p>;
 
     return (
-        <div style={{ maxHeight: '400px', overflowY: 'auto', borderRadius: '8px', border: '1px solid #ccc' }}>
+        <div style={{ maxHeight: '300px', overflowY: 'auto', borderRadius: '8px', border: '1px solid #ccc' }}>
             <table style={tableStyle}>
                 <thead>
                     <tr>

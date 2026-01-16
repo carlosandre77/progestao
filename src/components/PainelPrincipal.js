@@ -55,12 +55,13 @@ const PainelPrincipal = ({ loading, progestaoData, resumoProgestao }) => {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <PainelRetratil titulo="Resumo Pro-Gestão">            
+            <PainelRetratil >            
 
                 {/* Gráfico de Tipologia com nomes abreviados */}
                 <div style={{ height: 220, padding: '10px' }}>
                     <Bar 
                         data={barTipologiaData} 
+                        // title="Tipologia dos Prédios (Top 10)"
                         options={{ 
                             maintainAspectRatio: false, 
                             plugins: { 
@@ -85,7 +86,7 @@ const PainelPrincipal = ({ loading, progestaoData, resumoProgestao }) => {
                 </div>
             </PainelRetratil>
 
-            <PainelRetratil titulo="Dados Tabulados">
+            <PainelRetratil >
                 <div style={{ background: "#fff", padding: 5 }}>
                     <ProGestaoTable data={progestaoData} />
                 </div>
