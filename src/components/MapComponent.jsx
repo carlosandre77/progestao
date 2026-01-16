@@ -496,13 +496,7 @@ const MapComponent = forwardRef(({ lotes = [], quadras = [], nucleos = [], munic
                 />
               )}  
 
-              {/* LOTES LEGENDA */}
-              {layers?.lotes && (
-                <Legend 
-                  colors={statusColors} 
-                  title="Status dos Lotes" 
-                />
-              )}
+
             </>
           )}
           
