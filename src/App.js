@@ -74,12 +74,13 @@ useEffect(() => {
     quadras: true,
     nucleos: true,
     municipios: true,
-    territorios: true
+    territorios: true,
+    unidades: true
   });
 
 
   const {
-lotes,
+    lotes,
     quadras,
     nucleosFiltrados,
     municipiosMap,
@@ -87,9 +88,9 @@ lotes,
     territorios,
     territoriosOptions,
     municipiosFiltrados,
-    unidadesOptions, // <-- NOVA LISTA VINDA DO HOOK
-
+    unidadesOptions, 
     filteredBounds,
+    
 
 
     progestaoData, // <-- DADOS FILTRADOS PARA O PAINEL 5 OU AFINS
@@ -98,7 +99,6 @@ lotes,
     
 
   } = useNucleoFilters(selectedTerritorio, selectedMunicipio, selectedNucleo,selectedUnidade,activeView);
-
 
   
   const isAppLoading = loadingPainel1  ;
@@ -214,6 +214,7 @@ lotes,
             selectedUnidade={selectedUnidade}
             setSelectedUnidade={setSelectedUnidade}
             unidadesOptions={unidadesOptions}
+            progestaoData={progestaoData}
           />
           
           <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>

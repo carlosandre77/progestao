@@ -1,4 +1,4 @@
-// filterControls.js
+// components/filterControls.js
 
 
 // const normalizeString = (s) =>
@@ -35,6 +35,7 @@ const FilterControls = ({
   selectedUnidade,
   setSelectedUnidade,
   unidadesOptions,
+  progestaoData
 }) => {
   const toggleLayer = (layer) => {
     setLayersVisibility((prev) => ({
@@ -47,6 +48,7 @@ const FilterControls = ({
     // { key: "lotes", label: "Lotes", hasData: lotes?.length > 0 },
     // { key: "quadras", label: "Quadras", hasData: quadras?.length > 0 },
     // { key: "nucleos", label: "Núcleos", hasData: nucleos?.length > 0 },
+    { key: "unidades", label: "Unidades Administrativas", hasData: progestaoData?.length > 0 },
     { key: "municipios", label: "Municípios", hasData: municipios?.length > 0 },
     { key: "territorios", label: "Territórios", hasData: territorios?.length > 0 },
   ];

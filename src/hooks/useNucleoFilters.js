@@ -9,22 +9,38 @@ const fetchAllData = async () => {
     const API_URL = process.env.REACT_APP_API_URL;
     const authHeaders = { headers: { Authorization: `Bearer ${API_KEY}` } };
 
-    const [geoJsonRes, planilhaRes, resumoRes, controleRes, progestaoRes] = await Promise.all([
-        axios.get(`${API_URL}/api/dados_separados`, authHeaders),
+    // Removi 'nucleosRes' da lista para bater com o número de requests no Promise.all
+    const [
+        munRes, 
+        terrRes, 
+        planilhaRes, 
+        resumoRes, 
+        controleRes, 
+        progestaoRes
+    ] = await Promise.all([
+        axios.get(`${API_URL}/api/dados_separados/municipios`, authHeaders),
+        axios.get(`${API_URL}/api/dados_separados/territorios`, authHeaders),
+        axios.get(`${API_URL}/api/planilha-cerurb`, authHeaders),
         axios.get(`${API_URL}/api/planilha-resumo`, authHeaders),
         axios.get(`${API_URL}/api/planilha-controle`, authHeaders),
         axios.get(`${API_URL}/api/imoveis-progestao`, authHeaders)
     ]);
 
-    // Pré-processa os dados geográficos (Camadas do Mapa)
-    const features = (geoJsonRes.data.features || []).map(f => ({
+    // Unifica as features garantindo que não quebre se .features ou .municipios vierem vazios
+    const rawFeatures = [
+        ...(munRes.data.municipios || munRes.data.features || []),
+        ...(terrRes.data.territorios || terrRes.data.features || [])
+        // Se decidir voltar núcleos futuramente, adicione aqui
+    ];
+
+    const features = rawFeatures.map(f => ({
         ...f,
         properties: {
             ...f.properties,
-            municipio_normalizado: normalizeString(f.properties.MUNICIPIO),
-            nucleo_normalizado: normalizeString(f.properties.NUCLEO),
+            municipio_normalizado: normalizeString(f.properties.MUNICIPIO || f.properties.NM_MUN || ""),
+            nucleo_normalizado: normalizeString(f.properties.NUCLEO || f.properties.NOME_AREA || ""),
             nm_cerurb_normalizado: normalizeString(f.properties.NM_CERURB || ""),
-            territorio_normalizado: normalizeString(f.properties.TERRITORIO || "")
+            territorio_normalizado: normalizeString(f.properties.TERRITORIO || f.properties.NM_TERRITORIO || "")
         }
     }));
 

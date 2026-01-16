@@ -121,10 +121,13 @@ const MapComponent = forwardRef(({ lotes = [], quadras = [], nucleos = [], munic
 
 
   
-
   const progestaoIcon = L.icon({
     iconUrl: "/marker-progestao.png", // Certifique-se de ter um ícone com este nome em /public
-    iconSize: [10, 10],
+    iconSize:   zoomLevel >= 16
+                              ? [50, 50]
+                              : zoomLevel < 10
+                                ? [10, 10]
+                                : [30, 30],
     iconAnchor: [10, 10],
     popupAnchor: [1, -30],
   });
@@ -501,7 +504,7 @@ const MapComponent = forwardRef(({ lotes = [], quadras = [], nucleos = [], munic
           )}
           
         </div>
-        {progestaoData.length > 0 && progestaoData.map((item, index) => {
+        {layers?.unidades && progestaoData.length > 0 && progestaoData.map((item, index) => {
             // Converte "-5,86063" para -5.86063
             const lat = parseFloat(String(item.latitude).replace(',', '.'));
             const lng = parseFloat(String(item.longitude).replace(',', '.'));
@@ -526,11 +529,32 @@ const MapComponent = forwardRef(({ lotes = [], quadras = [], nucleos = [], munic
                         <tr><td><strong>Bairro:</strong></td><td>{item.bairro}</td></tr>
                         <tr><td><strong>Área Const.:</strong></td><td>{item.area_construida} m²</td></tr>
                         <tr><td><strong>Matrícula:</strong></td><td>{item.matricula}</td></tr>
+                        <tr><td><strong>Endereço:</strong></td><td>{item.endereco}</td></tr>
                       </tbody>
                     </table>
-                    <p style={{ marginTop: "5px", fontSize: "10px", color: "#666" }}>
-                      <strong>Endereço:</strong> {item.endereco}
-                    </p>
+                    <button
+                      onClick={() => window.open(item.street_link, "_blank")}
+                      style={{
+                        marginTop: "5px",
+                        fontSize: "10px",
+                        color: "#fff",
+                        background: "#91b4e2",
+                        padding: "4px 8px",
+                        borderRadius: "6px",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}
+                    >
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/512/854/854878.png"
+                        alt="Street View"
+                        style={{ width: "14px", height: "14px" }}
+                      />
+                      Street View
+                    </button>
                   </div>
                 </Popup>
               </Marker>
