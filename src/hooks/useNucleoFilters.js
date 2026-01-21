@@ -18,12 +18,12 @@ const fetchAllData = async () => {
         controleRes, 
         progestaoRes
     ] = await Promise.all([
-        axios.get(`${API_URL}/api/dados_separados/municipios`, authHeaders),
-        axios.get(`${API_URL}/api/dados_separados/territorios`, authHeaders),
-        axios.get(`${API_URL}/api/planilha-cerurb`, authHeaders),
-        axios.get(`${API_URL}/api/planilha-resumo`, authHeaders),
-        axios.get(`${API_URL}/api/planilha-controle`, authHeaders),
-        axios.get(`${API_URL}/api/imoveis-progestao`, authHeaders)
+        axios.get(`${API_URL}/dados/dados_separados/municipios`, authHeaders),
+        axios.get(`${API_URL}/dados/dados_separados/territorios`, authHeaders),
+        axios.get(`${API_URL}/dados/planilha-cerurb`, authHeaders),
+        axios.get(`${API_URL}/dados/planilha-resumo`, authHeaders),
+        axios.get(`${API_URL}/dados/planilha-controle`, authHeaders),
+        axios.get(`${API_URL}/dados/imoveis-progestao`, authHeaders)
     ]);
 
     // Unifica as features garantindo que não quebre se .features ou .municipios vierem vazios
